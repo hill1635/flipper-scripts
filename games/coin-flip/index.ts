@@ -41,6 +41,8 @@ function flipCoin() {
         }
         numberOfFlips--;
     }
+    views.flipDialog.set("text", COIN_POSITIONS[0]);
+    delay(500);
     pickRandomChoice();
 }
 
@@ -48,6 +50,7 @@ eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views)
     if (button === "center") {
         gui.viewDispatcher.switchTo(views.flipDialog);
         flipCoin();
+        gui.viewDispatcher.switchTo(views.startDialog);
     }
 }
 , gui, views);
