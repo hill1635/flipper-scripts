@@ -28,14 +28,17 @@ function getRandomInt(min, max) {
 function getResult() {
     const RANDOM_INDEX = math.floor(math.random() * choices.length);
     const DELAY_TIME = getRandomInt(500, 2000);
+    gui.viewDispatcher.switchTo(views.resultDialog);
     views.resultDialog.set("header", "It's...");
     delay(DELAY_TIME);
     views.resultDialog.set("text", choices[RANDOM_INDEX] + "!");
+    delay(500);
+    views.resultDialog.set("center", "Flip again");
 }
 
 function flipCoin() {
-    gui.viewDispatcher.switchTo(views.flipDialog);
     var numberOfFlips = getRandomInt(4, 12);
+    gui.viewDispatcher.switchTo(views.flipDialog);
     while (numberOfFlips > 0) {
         for (let i = 0; i < COIN_POSITIONS.length; i++) {
             views.flipDialog.set("text", COIN_POSITIONS[i]);
@@ -47,13 +50,14 @@ function flipCoin() {
     delay(125);
 }
 
+function run() {
+    flipCoin();
+    getResult();
+}
+
 eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views) {
     if (button === "center") {
-        flipCoin();
-        gui.viewDispatcher.switchTo(views.resultDialog);
-        getResult();
-        delay(500);
-        views.resultDialog.set("center", "Flip again");
+        run();
     }
 }
 , gui, views);
@@ -62,15 +66,10 @@ eventLoop.subscribe(views.resultDialog.input, function (_sub, button, gui, views
     views.resultDialog.set("text", "");
     views.resultDialog.set("center", "");
     if (button === "center") {
-        flipCoin();
-        gui.viewDispatcher.switchTo(views.resultDialog);
-        getResult();
-        delay(500);
-        views.resultDialog.set("center", "Flip again");
+        run();
     }
 }
 , gui, views);
 
-// flipCoin();
 gui.viewDispatcher.switchTo(views.startDialog);
 eventLoop.run();
