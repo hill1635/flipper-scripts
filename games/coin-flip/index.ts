@@ -27,10 +27,10 @@ function getRandomInt(min, max) {
     return math.floor(math.random() * (max - min)) + min;
 }
 
-function pickRandomChoice() {
+function getResult() {
     const RANDOM_INDEX = math.floor(math.random() * choices.length);
     const DELAY_TIME = getRandomInt(500, 1500);
-    views.resultDialog.set("header", "It's...");
+    views.resultDialog.set("text", "It's...");
     delay(DELAY_TIME);
     views.resultDialog.set("text", choices[RANDOM_INDEX] + "!");
 }
@@ -46,7 +46,6 @@ function flipCoin() {
     }
     views.flipDialog.set("text", COIN_POSITIONS[0]);
     delay(500);
-    pickRandomChoice();
 }
 
 eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views) {
@@ -54,6 +53,7 @@ eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views)
         gui.viewDispatcher.switchTo(views.flipDialog);
         flipCoin();
         gui.viewDispatcher.switchTo(views.resultDialog);
+        getResult();
     }
 }
 , gui, views);
