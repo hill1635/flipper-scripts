@@ -18,9 +18,7 @@ let views = {
     flipDialog: dialog.makeWith({
         header: "Flipping...",
     }),
-    resultDialog: dialog.makeWith({
-        center: "Flip again",
-    }),
+    resultDialog: dialog.make(),
 };
 
 function getRandomInt(min, max) {
@@ -29,23 +27,23 @@ function getRandomInt(min, max) {
 
 function getResult() {
     const RANDOM_INDEX = math.floor(math.random() * choices.length);
-    const DELAY_TIME = getRandomInt(500, 1500);
+    const DELAY_TIME = getRandomInt(500, 2000);
     views.resultDialog.set("text", "It's...");
     delay(DELAY_TIME);
     views.resultDialog.set("text", choices[RANDOM_INDEX] + "!");
 }
 
 function flipCoin() {
-    var numberOfFlips = getRandomInt(2, 6);
+    var numberOfFlips = getRandomInt(4, 12);
     while (numberOfFlips > 0) {
         for (let i = 0; i < COIN_POSITIONS.length; i++) {
             views.flipDialog.set("text", COIN_POSITIONS[i]);
-            delay(500);
+            delay(125);
         }
         numberOfFlips--;
     }
     views.flipDialog.set("text", COIN_POSITIONS[0]);
-    delay(500);
+    delay(125);
 }
 
 eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views) {
@@ -54,6 +52,8 @@ eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views)
         flipCoin();
         gui.viewDispatcher.switchTo(views.resultDialog);
         getResult();
+        delay(500);
+        views.resultDialog.set("center", "Flip again");
     }
 }
 , gui, views);
