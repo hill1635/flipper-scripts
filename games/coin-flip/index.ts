@@ -1,15 +1,22 @@
-let eventLoop = require("event_loop");
-let gui = require("gui");
-let math = require("math");
-let dialogView = require("gui/dialog");
+// import modules
+// caution: `eventLoop` HAS to be imported before `gui`, and `gui` HAS to be
+// imported before any `gui` submodules.
+import * as eventLoop from "@flipperdevices/fz-sdk/event_loop";
+import * as gui from "@flipperdevices/fz-sdk/gui";
+import * as math from "@flipperdevices/fz-sdk/math";
+import * as dialog from "@flipperdevices/fz-sdk/gui/dialog";
+
 let choices = ["Heads", "Tails"];
 const COIN_POSITIONS = ["--", "\\", "|", "/"];
 
 let views = {
-    startDialog: dialogView.makeWith({
+    startDialog: dialog.makeWith({
         header: "Coin Flipper",
         text: "Flip a coin",
         center: "Flip",
+    }),
+    flipDialog: dialog.makeWith({
+        header: "Flipping...",
     }),
 };
 
@@ -29,21 +36,17 @@ function flipCoin() {
     var numberOfFlips = getRandomInt(2, 6);
     while (numberOfFlips > 0) {
         for (let i = 0; i < COIN_POSITIONS.length; i++) {
-            print(" ");
-            print(COIN_POSITIONS[i]);
+            views.flipDialog.set("text", COIN_POSITIONS[i]);
             delay(500);
         }
         numberOfFlips--;
     }
-    print(" ");
-    print("--");
-    delay(500);
-    print(" ");
     pickRandomChoice();
 }
 
 eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views) {
     if (button === "center") {
+        gui.viewDispatcher.switchTo(views.flipDialog);
         flipCoin();
     }
 }
