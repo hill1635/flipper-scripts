@@ -14,6 +14,7 @@ var views = {
         header: "Coin Flipper",
         text: "Flip a coin",
         center: "Flip",
+        left: "Quit",
     }),
     flipDialog: dialog.makeWith({
         header: "Flipping...",
@@ -34,6 +35,7 @@ function getResult() {
     views.resultDialog.set("text", CHOICES[randomIndex] + "!");
     delay(500);
     views.resultDialog.set("center", "Flip again");
+    views.resultDialog.set("left", "Quit");
 }
 
 function flipCoin() {
@@ -58,6 +60,8 @@ function run() {
 eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views) {
     if (button === "center") {
         run();
+    } else if (button === "left") {
+        eventLoop.stop();
     }
 }
 , gui, views);
@@ -65,8 +69,11 @@ eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views)
 eventLoop.subscribe(views.resultDialog.input, function (_sub, button, gui, views) {
     views.resultDialog.set("text", "");
     views.resultDialog.set("center", "");
+    views.resultDialog.set("left", "");
     if (button === "center") {
         run();
+    } else if (button === "left") {
+        eventLoop.stop();
     }
 }
 , gui, views);
