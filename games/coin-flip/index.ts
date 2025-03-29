@@ -58,6 +58,16 @@ eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views)
 }
 , gui, views);
 
+eventLoop.subscribe(views.resultDialog.input, function (_sub, button, gui, views) {
+    if (button === "center") {
+        gui.viewDispatcher.switchTo(views.flipDialog);
+        flipCoin();
+        gui.viewDispatcher.switchTo(views.resultDialog);
+        getResult();
+    }
+}
+, gui, views);
+
 // flipCoin();
 gui.viewDispatcher.switchTo(views.startDialog);
 eventLoop.run();
