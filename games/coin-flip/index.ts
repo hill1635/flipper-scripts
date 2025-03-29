@@ -28,7 +28,7 @@ function getRandomInt(min, max) {
 function getResult() {
     const RANDOM_INDEX = math.floor(math.random() * choices.length);
     const DELAY_TIME = getRandomInt(500, 2000);
-    views.resultDialog.set("text", "It's...");
+    views.resultDialog.set("header", "It's...");
     delay(DELAY_TIME);
     views.resultDialog.set("text", choices[RANDOM_INDEX] + "!");
 }
