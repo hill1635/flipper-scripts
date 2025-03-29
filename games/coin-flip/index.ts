@@ -34,6 +34,7 @@ function getResult() {
 }
 
 function flipCoin() {
+    gui.viewDispatcher.switchTo(views.flipDialog);
     var numberOfFlips = getRandomInt(4, 12);
     while (numberOfFlips > 0) {
         for (let i = 0; i < COIN_POSITIONS.length; i++) {
@@ -48,7 +49,6 @@ function flipCoin() {
 
 eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views) {
     if (button === "center") {
-        gui.viewDispatcher.switchTo(views.flipDialog);
         flipCoin();
         gui.viewDispatcher.switchTo(views.resultDialog);
         getResult();
@@ -59,11 +59,14 @@ eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views)
 , gui, views);
 
 eventLoop.subscribe(views.resultDialog.input, function (_sub, button, gui, views) {
+    views.resultDialog.set("text", "");
+    views.resultDialog.set("center", "");
     if (button === "center") {
-        gui.viewDispatcher.switchTo(views.flipDialog);
         flipCoin();
         gui.viewDispatcher.switchTo(views.resultDialog);
         getResult();
+        delay(500);
+        views.resultDialog.set("center", "Flip again");
     }
 }
 , gui, views);
