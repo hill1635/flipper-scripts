@@ -6,10 +6,10 @@ import * as gui from "@flipperdevices/fz-sdk/gui";
 import * as math from "@flipperdevices/fz-sdk/math";
 import * as dialog from "@flipperdevices/fz-sdk/gui/dialog";
 
-let choices = ["Heads", "Tails"];
+const CHOICES = ["Heads", "Tails"];
 const COIN_POSITIONS = ["--", "\\", "|", "/"];
 
-let views = {
+var views = {
     startDialog: dialog.makeWith({
         header: "Coin Flipper",
         text: "Flip a coin",
@@ -26,18 +26,18 @@ function getRandomInt(min, max) {
 }
 
 function getResult() {
-    const RANDOM_INDEX = math.floor(math.random() * choices.length);
-    const DELAY_TIME = getRandomInt(500, 2000);
+    let randomIndex = math.floor(math.random() * CHOICES.length);
+    let delayTime = getRandomInt(500, 2000);
     gui.viewDispatcher.switchTo(views.resultDialog);
     views.resultDialog.set("header", "It's...");
-    delay(DELAY_TIME);
-    views.resultDialog.set("text", choices[RANDOM_INDEX] + "!");
+    delay(delayTime);
+    views.resultDialog.set("text", CHOICES[randomIndex] + "!");
     delay(500);
     views.resultDialog.set("center", "Flip again");
 }
 
 function flipCoin() {
-    var numberOfFlips = getRandomInt(4, 12);
+    let numberOfFlips = getRandomInt(4, 12);
     gui.viewDispatcher.switchTo(views.flipDialog);
     while (numberOfFlips > 0) {
         for (let i = 0; i < COIN_POSITIONS.length; i++) {
