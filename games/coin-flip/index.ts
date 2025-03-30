@@ -6,10 +6,10 @@ import * as gui from "@flipperdevices/fz-sdk/gui";
 import * as math from "@flipperdevices/fz-sdk/math";
 import * as dialog from "@flipperdevices/fz-sdk/gui/dialog";
 
-let choices = ["Heads", "Tails"];
+const CHOICES = ["Heads", "Tails"];
 const COIN_POSITIONS = ["--", "\\", "|", "/"];
 
-let views = {
+var views = {
     startDialog: dialog.makeWith({
         header: "Coin Flipper",
         text: "Flip a coin",
@@ -18,40 +18,68 @@ let views = {
     flipDialog: dialog.makeWith({
         header: "Flipping...",
     }),
+    resultDialog: dialog.make(),
 };
 
-function getRandomInt(min, max) {
+const setText = (view, location, text) => {
+    views[view].set(location, text);
+};
+
+const switchView = (view) => {
+    gui.viewDispatcher.switchTo(views[view]);
+};
+
+const getRandomInt = (min, max) => {
     return math.floor(math.random() * (max - min)) + min;
-}
+};
 
-function pickRandomChoice() {
-    const randomIndex = math.floor(math.random() * choices.length);
-    print(" ");
-    print("It's...");
+const getResult = () => {
+    let randomIndex = math.floor(math.random() * CHOICES.length);
+    let delayTime = getRandomInt(500, 2000);
+    switchView("resultDialog");
+    setText("resultDialog", "header", "It's...");
+    delay(delayTime);
+    setText("resultDialog", "text", CHOICES[randomIndex] + "!");
     delay(500);
-    print(choices[randomIndex] + "!");
-}
+    setText("resultDialog", "center", "Flip again");
+};
 
-function flipCoin() {
-    var numberOfFlips = getRandomInt(2, 6);
+const flipCoin = () => {
+    let numberOfFlips = getRandomInt(4, 12);
+    switchView("flipDialog");
     while (numberOfFlips > 0) {
         for (let i = 0; i < COIN_POSITIONS.length; i++) {
-            views.flipDialog.set("text", COIN_POSITIONS[i]);
-            delay(500);
+            setText("flipDialog", "text", COIN_POSITIONS[i]);
+            delay(125);
         }
         numberOfFlips--;
     }
-    pickRandomChoice();
-}
+    setText("flipDialog", "text", COIN_POSITIONS[0]);
+    delay(125);
+};
 
-eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views) {
+const run = () => {
+    flipCoin();
+    getResult();
+};
+
+eventLoop.subscribe(views.startDialog.input, function (_sub, button) {
     if (button === "center") {
-        gui.viewDispatcher.switchTo(views.flipDialog);
-        flipCoin();
-    }
-}
-, gui, views);
+        run();
+    } 
+});
 
-// flipCoin();
-gui.viewDispatcher.switchTo(views.startDialog);
+eventLoop.subscribe(views.resultDialog.input, function (_sub, button) {
+    setText("resultDialog", "text", "");
+    setText("resultDialog", "center", "");
+    if (button === "center") {
+        run();
+    } 
+});
+
+eventLoop.subscribe(gui.viewDispatcher.navigation, function (_sub, _item, eventLoop) {
+    eventLoop.stop();
+}, eventLoop);
+
+switchView("startDialog");
 eventLoop.run();
