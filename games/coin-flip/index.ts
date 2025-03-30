@@ -14,7 +14,6 @@ var views = {
         header: "Coin Flipper",
         text: "Flip a coin",
         center: "Flip",
-        left: "Quit",
     }),
     flipDialog: dialog.makeWith({
         header: "Flipping...",
@@ -22,15 +21,15 @@ var views = {
     resultDialog: dialog.make(),
 };
 
-function setText(view, location, text) {
+const setText = (view, location, text) => {
     views[view].set(location, text);
-}
+};
 
-function getRandomInt(min, max) {
+const getRandomInt = (min, max) => {
     return math.floor(math.random() * (max - min)) + min;
-}
+};
 
-function getResult() {
+const getResult = () => {
     let randomIndex = math.floor(math.random() * CHOICES.length);
     let delayTime = getRandomInt(500, 2000);
     gui.viewDispatcher.switchTo(views.resultDialog);
@@ -39,10 +38,9 @@ function getResult() {
     setText("resultDialog", "text", CHOICES[randomIndex] + "!");
     delay(500);
     setText("resultDialog", "center", "Flip again");
-    setText("resultDialog", "left", "Quit");
-}
+};
 
-function flipCoin() {
+const flipCoin = () => {
     let numberOfFlips = getRandomInt(4, 12);
     gui.viewDispatcher.switchTo(views.flipDialog);
     while (numberOfFlips > 0) {
@@ -54,33 +52,32 @@ function flipCoin() {
     }
     setText("flipDialog", "text", COIN_POSITIONS[0]);
     delay(125);
-}
+};
 
-function run() {
+const run = () => {
     flipCoin();
     getResult();
-}
+};
 
 eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views) {
     if (button === "center") {
         run();
-    } else if (button === "left") {
-        eventLoop.stop();
-    }
+    } 
 }
 , gui, views);
 
 eventLoop.subscribe(views.resultDialog.input, function (_sub, button, gui, views) {
     setText("resultDialog", "text", "");
     setText("resultDialog", "center", "");
-    setText("resultDialog", "left", "");
     if (button === "center") {
         run();
-    } else if (button === "left") {
-        eventLoop.stop();
-    }
+    } 
 }
 , gui, views);
+
+eventLoop.subscribe(gui.viewDispatcher.navigation, function (_sub, _item, eventLoop) {
+    eventLoop.stop();
+}, eventLoop);
 
 gui.viewDispatcher.switchTo(views.startDialog);
 eventLoop.run();
