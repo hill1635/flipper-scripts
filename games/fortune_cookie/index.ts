@@ -83,6 +83,20 @@ const views = {
         text: "Crack one open to see what awaits you...",
         center: "Open",
     }),
+    fortuneDialog: dialog.make(),
+
+};
+
+const setText = (view, location, text) => {
+    views[view].set(location, text);
+};
+
+const switchView = (view) => {
+    gui.viewDispatcher.switchTo(views[view]);
+};
+
+const getRandomInt = (min, max) => {
+    return math.floor(math.random() * (max - min)) + min;
 };
 
 eventLoop.subscribe(views.dialog.input, (_sub, button, eventLoop) => {
