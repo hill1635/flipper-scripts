@@ -109,10 +109,10 @@ const getFortune = () => {
     setText("fortuneDialog", "center", "New fortune");
 };
 
-eventLoop.subscribe(views.dialog.input, (_sub, button, eventLoop) => {
+eventLoop.subscribe(views.dialog.input, (_sub, button) => {
     if (button === "center")
         getFortune();
-}, eventLoop);
+});
 
 eventLoop.subscribe(gui.viewDispatcher.navigation, (_sub, _item, eventLoop) => {
     eventLoop.stop();
