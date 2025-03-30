@@ -79,9 +79,9 @@ const FORTUNES = [
 // a common pattern is to declare all the views that your app uses on one object
 const views = {
     dialog: dialog.makeWith({
-        header: "Hello from fortune_cookie",
-        text: "Text",
-        center: "Gonna do that!",
+        header: "Fortune Cookie",
+        text: "Crack one open to see what awaits you...",
+        center: "Open",
     }),
 };
 
