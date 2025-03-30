@@ -25,6 +25,10 @@ const setText = (view, location, text) => {
     views[view].set(location, text);
 };
 
+const switchView = (view) => {
+    gui.viewDispatcher.switchTo(views[view]);
+};
+
 const getRandomInt = (min, max) => {
     return math.floor(math.random() * (max - min)) + min;
 };
@@ -32,7 +36,7 @@ const getRandomInt = (min, max) => {
 const getResult = () => {
     let randomIndex = math.floor(math.random() * CHOICES.length);
     let delayTime = getRandomInt(500, 2000);
-    gui.viewDispatcher.switchTo(views.resultDialog);
+    switchView("resultDialog");
     setText("resultDialog", "header", "It's...");
     delay(delayTime);
     setText("resultDialog", "text", CHOICES[randomIndex] + "!");
@@ -42,7 +46,7 @@ const getResult = () => {
 
 const flipCoin = () => {
     let numberOfFlips = getRandomInt(4, 12);
-    gui.viewDispatcher.switchTo(views.flipDialog);
+    switchView("flipDialog");
     while (numberOfFlips > 0) {
         for (let i = 0; i < COIN_POSITIONS.length; i++) {
             setText("flipDialog", "text", COIN_POSITIONS[i]);
@@ -59,25 +63,23 @@ const run = () => {
     getResult();
 };
 
-eventLoop.subscribe(views.startDialog.input, function (_sub, button, gui, views) {
+eventLoop.subscribe(views.startDialog.input, function (_sub, button) {
     if (button === "center") {
         run();
     } 
-}
-, gui, views);
+});
 
-eventLoop.subscribe(views.resultDialog.input, function (_sub, button, gui, views) {
+eventLoop.subscribe(views.resultDialog.input, function (_sub, button) {
     setText("resultDialog", "text", "");
     setText("resultDialog", "center", "");
     if (button === "center") {
         run();
     } 
-}
-, gui, views);
+});
 
 eventLoop.subscribe(gui.viewDispatcher.navigation, function (_sub, _item, eventLoop) {
     eventLoop.stop();
 }, eventLoop);
 
-gui.viewDispatcher.switchTo(views.startDialog);
+switchView("startDialog");
 eventLoop.run();
