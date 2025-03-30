@@ -4,6 +4,7 @@
 import * as eventLoop from "@flipperdevices/fz-sdk/event_loop";
 import * as gui from "@flipperdevices/fz-sdk/gui";
 import * as dialog from "@flipperdevices/fz-sdk/gui/dialog";
+import * as textBox from "@flipperdevices/fz-sdk/gui/text_box";
 import * as math from "@flipperdevices/fz-sdk/math";
 
 // create an array of fortunes for a fortune cookie
@@ -83,7 +84,7 @@ const views = {
         text: "Crack one open to see what awaits you...",
         center: "Open",
     }),
-    fortuneDialog: dialog.make(),
+    fortuneTextBox: textBox.make(),
     loadingDialog: dialog.makeWith({
         header: "Opening...",
         text: "Please wait...",
@@ -105,11 +106,9 @@ const getRandomInt = (min, max) => {
 const getFortune = () => {
     let fortune = pickFortune();
     let delayTime = getRandomInt(500, 2000);
-    switchView("fortuneDialog");
+    switchView("fortuneTextBox");
     delay(delayTime);
-    setText("fortuneDialog", "text", fortune);
-    delay(500);
-    setText("fortuneDialog", "center", "New fortune");
+    setText("fortuneTextBox", "text", fortune);
 };
 
 eventLoop.subscribe(views.dialog.input, (_sub, button) => {
@@ -117,15 +116,6 @@ eventLoop.subscribe(views.dialog.input, (_sub, button) => {
         var delayTime = getRandomInt(500, 2000);
         switchView("loadingDialog");
         delay(delayTime);
-        getFortune();
-});
-
-eventLoop.subscribe(views.fortuneDialog.input, (_sub, button) => {
-    if (button === "center")
-        setText("fortuneDialog", "text", "");
-        setText("fortuneDialog", "center", "");
-        switchView("loadingDialog");
-        delay(500);
         getFortune();
 });
 
