@@ -119,5 +119,5 @@ eventLoop.subscribe(gui.viewDispatcher.navigation, (_sub, _item, eventLoop) => {
 }, eventLoop);
 
 // run app
-gui.viewDispatcher.switchTo(views.dialog);
+switchView("dialog");
 eventLoop.run();
