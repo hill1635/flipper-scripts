@@ -114,6 +114,11 @@ eventLoop.subscribe(views.dialog.input, (_sub, button) => {
         getFortune();
 });
 
+eventLoop.subscribe(views.fortuneDialog.input, (_sub, button) => {
+    if (button === "center")
+        getFortune();
+});
+
 eventLoop.subscribe(gui.viewDispatcher.navigation, (_sub, _item, eventLoop) => {
     eventLoop.stop();
 }, eventLoop);
