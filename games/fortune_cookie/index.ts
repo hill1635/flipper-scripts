@@ -99,9 +99,19 @@ const getRandomInt = (min, max) => {
     return math.floor(math.random() * (max - min)) + min;
 };
 
+const getFortune = () => {
+    let fortune = pickFortune();
+    let delayTime = getRandomInt(500, 2000);
+    switchView("fortuneDialog");
+    delay(delayTime);
+    setText("fortuneDialog", "text", fortune);
+    delay(500);
+    setText("fortuneDialog", "center", "New fortune");
+};
+
 eventLoop.subscribe(views.dialog.input, (_sub, button, eventLoop) => {
     if (button === "center")
-        eventLoop.stop();
+        getFortune();
 }, eventLoop);
 
 eventLoop.subscribe(gui.viewDispatcher.navigation, (_sub, _item, eventLoop) => {
