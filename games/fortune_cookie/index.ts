@@ -84,7 +84,10 @@ const views = {
         center: "Open",
     }),
     fortuneDialog: dialog.make(),
-
+    loadingDialog: dialog.makeWith({
+        header: "Opening...",
+        text: "Please wait...",
+    }),
 };
 
 const setText = (view, location, text) => {
@@ -111,11 +114,18 @@ const getFortune = () => {
 
 eventLoop.subscribe(views.dialog.input, (_sub, button) => {
     if (button === "center")
+        var delayTime = getRandomInt(500, 2000);
+        switchView("loadingDialog");
+        delay(delayTime);
         getFortune();
 });
 
 eventLoop.subscribe(views.fortuneDialog.input, (_sub, button) => {
     if (button === "center")
+        setText("fortuneDialog", "text", "");
+        setText("fortuneDialog", "center", "");
+        switchView("loadingDialog");
+        delay(500);
         getFortune();
 });
 
